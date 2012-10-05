@@ -34,13 +34,13 @@ block content
     var cmd;
     function registerDeviceOrientation() {
       window.addEventListener('deviceorientation', function(e){
-        cmd = JSON.stringify({type: "orientation", alpha: e.alpha, beta: e.beta, gamma: e.gamma});
+        cmd = JSON.stringify({type: 'orientation', alpha: e.alpha, beta: e.beta, gamma: e.gamma});
       });
     }
 
 
     var socket = new eio.Socket('ws://#{ip}/');
-    socket.on('open', function () {
+    socket.on('open', function() {
       registerButtonClick('liftoff', 'takeoff');
       registerButtonClick('land', 'land');
 
@@ -52,6 +52,4 @@ block content
       setInterval(function() {
         socket.send(cmd)
       }, 100);
-
-      socket.on('close', function () { });
     });

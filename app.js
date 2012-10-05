@@ -3,12 +3,12 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path')
-  , arDrone = require('ar-drone')
-  , client  = arDrone.createClient();
+var express = require('express'),
+    routes = require('./routes'),
+    http = require('http'),
+    path = require('path'),
+    arDrone = require('ar-drone'),
+    client  = arDrone.createClient();
 
 var app = express();
 
@@ -73,7 +73,7 @@ wsserver.on('connection', function(socket) {
     }
 
   });
-  socket.on('close', function () {
+  socket.on('close', function() {
     console.log('=====> client lost connection...');
   });
 });
