@@ -40,11 +40,12 @@ var wsserver = engine.listen(3001);
 wsserver.on('connection', function(socket) {
   var splittedData,
       json,
-      takenOff;
+      takenOff,
+      argument;
 
   console.log('=====> incoming connection...');
   socket.on('message', function(data) {
-    console.log('=====> data:  ' + data);
+    console.log('=====> incoming data:  ' + data);
     if (data.charAt(0) == '{') {
       json = JSON.parse(data);
       takenOff && controlDroneWithOrientation(json);
@@ -56,14 +57,24 @@ wsserver.on('connection', function(socket) {
           takenOff = true;
         }, 2000);
       }
+
+      if (splittedData[0] == 'land') {
+        takenOff = false;
+        client.stop();
+      }
       if (splittedData && splittedData[0]) {
-        client[splittedData[0]](splittedData[1]);
+        argument = '';
+        if (splittedData[1]) {
+          argument = splittedData[1];
+        }
+
+        client[splittedData[0]](argument);
       }
     }
 
   });
-  socket.on('close', function () { 
-    console.log('=====> lost connection...');
+  socket.on('close', function () {
+    console.log('=====> client lost connection...');
   });
 });
 
