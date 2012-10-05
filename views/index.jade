@@ -2,31 +2,56 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
 
-  button(id='liftoff') Lift off
-  button(id='land') Land
+  div
+    Use the buttons and your iPhone's device orientation to control the drone.
+    br
+    The nodeserver should have that currently hardcoded ip: #{ip}
+
+  div(class='control-box')
+    button(id='liftoff') Lift off
+    button(id='land') Land
+
+  div(class='control-box')
+    button(id='up') Up
+    button(id='down') Down
 
   script(src='/javascripts/engine.io.js')
-
   script
 
-    function registerButtonClick(id, cmd) {
+    function registerButtonClick(id, cmd, arg1) {
       var button = document.getElementById(id);
+
+      if (arg1) {
+        cmd = cmd + '|' + arg1;
+      }
 
       button.addEventListener('click', function(e) {
         socket.send(cmd);
       });
     }
 
+    var cmd;
+    function registerDeviceOrientation() {
+      window.addEventListener('deviceorientation', function(e){
+        cmd = JSON.stringify({type: "orientation", alpha: e.alpha, beta: e.beta, gamma: e.gamma});
+      });
+    }
 
-    var socket = new eio.Socket('ws://192.168.1.2:3001/');
+
+    var socket = new eio.Socket('ws://#{ip}/');
     socket.on('open', function () {
       registerButtonClick('liftoff', 'takeoff');
       registerButtonClick('land', 'land');
 
-      socket.on('message', function (data) { 
+      registerButtonClick('up', 'up', 0.5);
+      registerButtonClick('down', 'down', 0.5);
 
-      });
+      registerDeviceOrientation();
+
+      setInterval(function() {
+        socket.send(cmd)
+      }, 100);
+
       socket.on('close', function () { });
     });

@@ -6,3 +6,13 @@ body {
 a {
   color: #00B7FF;
 }
+
+.control-box {
+  padding-top: 10px;
+}
+
+button {
+  margin: 5px;
+  padding: 20px;
+  width: 100px;
+}
