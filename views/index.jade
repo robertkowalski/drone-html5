@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  button(id='liftoff') Lift off
+  button(id='land') Land
+
+  script(src='/javascripts/engine.io.js')
+
+  script
+
+    function registerButtonClick(id, cmd) {
+      var button = document.getElementById(id);
+
+      button.addEventListener('click', function(e) {
+        socket.send(cmd);
+      });
+    }
+
+
+    var socket = new eio.Socket('ws://192.168.1.2:3001/');
+    socket.on('open', function () {
+      registerButtonClick('liftoff', 'takeoff');
+      registerButtonClick('land', 'land');
+
+      socket.on('message', function (data) { 
+
+      });
+      socket.on('close', function () { });
+    });
